@@ -38,7 +38,7 @@ public class S3Client {
             metadata.setContentLength(0);
             InputStream inputStream = new ByteArrayInputStream(new byte[0]);
             PutObjectRequest linkPutRequest = new PutObjectRequest(bucketName, link, inputStream, metadata)
-            //linkPutRequest.setCannedAcl(CannedAccessControlList.PublicRead)
+            linkPutRequest.setCannedAcl(CannedAccessControlList.Private)
             s3Client.putObject(linkPutRequest);
             return s3Client.generatePresignedUrl(bucketName, link, new LocalDateTime().plusDays(30).toDate());
         }

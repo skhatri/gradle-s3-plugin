@@ -1,6 +1,9 @@
+import org.gradle.api.artifacts.maven.MavenDeployment
 
 apply plugin: 'groovy'
 apply plugin: 'idea'
+apply plugin: 'maven'
+apply plugin: 'signing'
 
 dependencies {
     compile localGroovy()
@@ -13,3 +16,73 @@ repositories {
     mavenCentral()
 }
 
+def isReleaseVersion = !(version ==~ /(?i).*SNAPSHOT$/)
+if (isReleaseVersion) {
+    project.ext['upload.url'] = project.ext['upload.release.url']
+} else {
+    project.ext['upload.url'] = project.ext['upload.snapshot.url']
+}
+
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from "$buildDir/docs/javadoc"
+}
+
+task sourcesJar(type: Jar) {
+    from sourceSets.main.allSource
+    classifier = 'sources'
+}
+
+artifacts {
+    archives jar
+    archives javadocJar
+    archives sourcesJar
+}
+
+signing {
+    required { isReleaseVersion && gradle.taskGraph.hasTask("uploadArchives") }
+    sign configurations.archives
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+            repository(url: project.ext['upload.url']) {
+                authentication(userName: project.ext['upload.user'], password: project.ext['upload.password'])
+            }
+            pom.version = project.version
+            pom.artifactId = "${project.artifact}"
+            pom.project {
+                name 'Gradle S3 Plugin'
+                description 'Plugin upload and download files from AWS S3 buckets'
+                url 'https://github.com/skhatri/gradle-s3-plugin'
+                licenses {
+                    license {
+                        name 'The Apache Software License, Version 2.0'
+                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                        distribution 'repo'
+                    }
+                }
+                developers {
+                    developer {
+                        id 'skhatri'
+                        name 'Suresh Khatri'
+                        email 'kc2005au@gmail.com'
+                        url 'https://github.com/skhatri'
+                        roles {
+                            role 'Developer'
+                        }
+                    }
+                }
+                scm {
+                    connection 'scm:git:https://github.com/skhatri/gradle-s3-plugin.git'
+                    developerConnection 'scm:git:https://github.com/skhatri/gradle-s3-plugin.git'
+                    tag 'HEAD'
+                    url 'https://github.com/skhatri/gradle-s3-plugin'
+                }
+            }
+        }
+    }
+}

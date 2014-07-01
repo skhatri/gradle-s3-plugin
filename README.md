@@ -23,7 +23,6 @@ Plugin Configuration in your build.gradle
 buildscript {
     dependencies {
         classpath 'com.github.skhatri:gradle-s3-plugin:1.0.0'
-        classpath 'com.amazonaws:aws-java-sdk:1.8.0'
         classpath 'joda-time:joda-time:2.3'
     }
     repositories {
@@ -35,7 +34,7 @@ apply plugin: 's3'
 s3 {
     bucket = 'skhatri-bucket'
     upload {
-        key = 'gradle-s3-plugin-1.0.0-SNAPSHOT.jar'
+        key =  new org.joda.time.LocalDate().toString('yyyy/MM/dd')+'/gradle-s3-plugin-1.0.0-SNAPSHOT.jar'
         file = '../build/libs/gradle-s3-plugin-1.0.0-SNAPSHOT.jar'
         link = 'latest/gradle-plugin.jar'
     }

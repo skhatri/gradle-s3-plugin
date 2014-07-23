@@ -46,3 +46,44 @@ s3 {
 
 
 ```
+
+### Using Upload Task to upload more artifacts ###
+```
+task uploadAppJar(type: com.github.skhatri.s3aws.plugin.S3UploadTask) {
+    key = 'gradle-s3-plugin-1.0.0-something.jar'
+    file = '../build/libs/gradle-s3-plugin-master-1.0.1-SNAPSHOT.jar'
+    link = 'latest/gradle-plugin.jar'
+}
+```
+Then I can call "gradle uploadAppJar" to upload yet another artifact to S3.
+
+This can be useful, if uploading hash checksums of the artifacts. For instance, I can upload sha1 value of the artifact so my automated artifact deployment task could download checksum file first to decide whether downloading the big artifact is worth it.
+ 
+``` 
+task writeHash() {
+    String hashValue = computeHash('../build/libs/gradle-s3-plugin-master-1.0.1-SNAPSHOT.jar')
+    file('../build/libs/gradle-s3-plugin-master-1.0.1-SNAPSHOT.sha1').write(hashValue)
+}
+
+task uploadHash(type: com.github.skhatri.s3aws.plugin.S3UploadTask) {
+    key = 'gradle-s3-plugin-1.0.0-something.sha1'
+    file = '../build/libs/gradle-s3-plugin-master-1.0.1-SNAPSHOT.sha1'
+    link = 'latest/gradle-plugin.sha1'
+}
+
+task awsUpload(dependsOn:['uploadAppJar', 'writeHash', 'uploadHash']) {
+}
+```
+Now, calling awsUpload will upload jar and the hash file.
+
+### Downloading more than one artifact ###
+
+Similarly, I can download more artifacts by simply creating ad-hoc Download task. I am downloading the previously uploaded sha1 file of the artifact using the task below.
+
+```
+task awsDownload(type: com.github.skhatri.s3aws.plugin.S3DownloadTask) {
+    key = 'latest/gradle-plugin.sha1'
+    saveTo = 'gradle-plugin.txt'
+}
+```
+

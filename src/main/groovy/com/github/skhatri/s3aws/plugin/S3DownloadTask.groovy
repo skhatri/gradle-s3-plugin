@@ -10,22 +10,26 @@ class S3DownloadTask extends DefaultTask {
     @Input
     String bucket
     @Input
+    String awsProfile
+    @Input
     String key
     @Input
     String saveTo
 
     public S3DownloadTask() {
         bucket = ''
+        awsProfile = ''
     }
 
     @TaskAction
     public void perform() {
         logger.quiet "s3 download " + getBucket()
+        logger.quiet "using aws profile " + getAwsProfile()
         String keyValue = getKey()
         if (keyValue == null || keyValue == '') {
             return;
         }
-        S3Client client = new S3Client();
+        S3Client client = new S3Client(getAwsProfile());
         client.downloadFile(getBucket(), keyValue, getSaveTo())
         logger.quiet "Downloaded \"" + keyValue + "\" to \"" + getSaveTo() + "\""
     }

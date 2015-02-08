@@ -11,7 +11,9 @@ As the name suggests, the s3Upload task can be used to upload a local file to a 
 # s3Download
 Similarly, the s3Download task can be used to download a given file from a chosen bucket to a local directory.
 
-The plugin uses a ProfileCredentialsProvider strategy to figure out AWS access and secret key.
+The plugin uses a ProfileCredentialsProvider strategy to figure out AWS access and secret key. The
+name of the credentials profile to use when connecting to AWS can be specified by the aswProfile
+propterty.
 
 See com.github.skhatri.s3aws.client.S3Client for implementation.
 
@@ -33,6 +35,7 @@ apply plugin: 's3'
 
 s3 {
     bucket = 'skhatri-bucket'
+    awsProfile = 'default'
     upload {
         key =  new org.joda.time.LocalDate().toString('yyyy/MM/dd')+'/gradle-s3-plugin-1.0.0-SNAPSHOT.jar'
         file = '../build/libs/gradle-s3-plugin-1.0.0-SNAPSHOT.jar'
@@ -58,8 +61,8 @@ task uploadAppJar(type: com.github.skhatri.s3aws.plugin.S3UploadTask) {
 Then I can call "gradle uploadAppJar" to upload yet another artifact to S3.
 
 This can be useful, if uploading hash checksums of the artifacts. For instance, I can upload sha1 value of the artifact so my automated artifact deployment task could download checksum file first to decide whether downloading the big artifact is worth it.
- 
-``` 
+
+```
 task writeHash() {
     String hashValue = computeHash('../build/libs/gradle-s3-plugin-master-1.0.1-SNAPSHOT.jar')
     file('../build/libs/gradle-s3-plugin-master-1.0.1-SNAPSHOT.sha1').write(hashValue)

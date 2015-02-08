@@ -13,8 +13,8 @@ public class S3Client {
 
     private static final String AMZ_REDIRECT_LINK = "x-amz-website-redirect-location";
 
-    public S3Client() {
-        s3Client = new AmazonS3Client(new ProfileCredentialsProvider());
+    public S3Client(String awsProfile) {
+        s3Client = new AmazonS3Client(new ProfileCredentialsProvider(awsProfile));
     }
 
     public String uploadFile(String bucketName, String key, String fileName, String link) {

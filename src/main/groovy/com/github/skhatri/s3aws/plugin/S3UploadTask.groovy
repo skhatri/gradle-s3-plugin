@@ -6,29 +6,33 @@ import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.TaskAction
 
 class S3UploadTask extends DefaultTask {
+
     @Input
     String bucket
+    @Input
+    String awsProfile
     @Input
     String key
     @Input
     String file
-
     @Input
     String link
 
     public S3UploadTask() {
         bucket = ''
+        awsProfile = ''
     }
 
     @TaskAction
     public void perform() {
         logger.quiet "s3 upload " + getBucket()
+        logger.quiet "using aws profile " + getAwsProfile()
         String fileName = getFile()
         if (fileName == null || fileName == '') {
             return;
         }
         String keyValue = getKey()
-        S3Client client = new S3Client();
+        S3Client client = new S3Client(getAwsProfile());
         String presigned = client.uploadFile(getBucket(), keyValue, fileName, getLink())
         logger.quiet "Uploaded \"" + fileName + "\" to \"" + keyValue + "\""
         logger.quiet "Downloadable from " + presigned + " within next 30 days"

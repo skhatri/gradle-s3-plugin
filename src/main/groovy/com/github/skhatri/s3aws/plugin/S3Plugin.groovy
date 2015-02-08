@@ -21,6 +21,7 @@ public class S3Plugin implements Plugin<Project> {
             def s3UploadExt = s3Ext.extensions.getByName('upload')
 
             conventionMapping.bucket = { s3Ext.bucket }
+            conventionMapping.awsProfile = { s3Ext.awsProfile }
             conventionMapping.key = { s3UploadExt.key }
             conventionMapping.link = { s3UploadExt.link }
             conventionMapping.file = { s3UploadExt.file }
@@ -35,6 +36,7 @@ public class S3Plugin implements Plugin<Project> {
             def s3Ext = project.extensions.getByName('s3')
             def s3DownloadExt = s3Ext.extensions.getByName('download')
             conventionMapping.bucket = { s3Ext.bucket }
+            conventionMapping.awsProfile = { s3Ext.awsProfile }
             conventionMapping.key = { s3DownloadExt.key }
             conventionMapping.saveTo = { s3DownloadExt.saveTo }
         }

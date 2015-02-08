@@ -12,6 +12,7 @@ apply plugin: 's3'
 
 s3 {
     bucket = 'skhatri-bucket'
+    awsProfile = 'default'
     upload {
         key = 'gradle-s3-plugin-1.0.0-SNAPSHOT.jar'
         file = '../build/libs/gradle-s3-plugin-1.0.0-SNAPSHOT.jar'

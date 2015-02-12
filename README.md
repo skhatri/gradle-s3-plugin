@@ -12,7 +12,7 @@ As the name suggests, the s3Upload task can be used to upload a local file to a 
 Similarly, the s3Download task can be used to download a given file from a chosen bucket to a local directory.
 
 The plugin uses a ProfileCredentialsProvider strategy to figure out AWS access and secret key. The
-name of the credentials profile to use when connecting to AWS can be specified by the aswProfile
+name of the credentials profile to use when connecting to AWS can be specified by the awsProfile
 propterty.
 
 See com.github.skhatri.s3aws.client.S3Client for implementation.

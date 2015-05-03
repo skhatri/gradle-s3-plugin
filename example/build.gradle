@@ -1,21 +1,24 @@
 buildscript {
     dependencies {
-        classpath 'com.github.skhatri:gradle-s3-plugin:1.0.0'
-        classpath 'com.amazonaws:aws-java-sdk:1.8.0'
-        classpath 'joda-time:joda-time:2.3'
+        classpath 'com.github.skhatri:gradle-s3-plugin:1.0.2-SNAPSHOT'
+        classpath 'com.amazonaws:aws-java-sdk-s3:1.9.33'
+        classpath 'joda-time:joda-time:2.4'
     }
     repositories {
         mavenCentral()
+        flatDir {
+            dirs '../build/libs'
+        }
     }
 }
 apply plugin: 's3'
 
 s3 {
     bucket = 'skhatri-bucket'
-    awsProfile = 'default'
+    awsProfile = 'skhatri'
     upload {
-        key = 'gradle-s3-plugin-1.0.0-SNAPSHOT.jar'
-        file = '../build/libs/gradle-s3-plugin-1.0.0-SNAPSHOT.jar'
+        key = 'gradle-s3-plugin-1.0.2-SNAPSHOT.jar'
+        file = '../build/libs/gradle-s3-plugin-1.0.2-SNAPSHOT.jar'
         link = 'latest/gradle-plugin.jar'
     }
     download {

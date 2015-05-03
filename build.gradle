@@ -8,8 +8,8 @@ apply plugin: 'signing'
 dependencies {
     compile localGroovy()
     compile gradleApi()
-    compile 'com.amazonaws:aws-java-sdk:1.9.17'
-    compile 'joda-time:joda-time:2.3'
+    compile 'com.amazonaws:aws-java-sdk-s3:1.9.33'
+    compile 'joda-time:joda-time:2.4'
 }
 
 repositories {

@@ -10,6 +10,8 @@ class S3UploadTask extends DefaultTask {
     @Input
     String bucket
     @Input
+    String region
+    @Input
     String awsProfile
     @Input
     String key
@@ -20,20 +22,26 @@ class S3UploadTask extends DefaultTask {
 
     public S3UploadTask() {
         bucket = ''
+        region = ''
         awsProfile = ''
     }
 
     @TaskAction
     public void perform() {
-        logger.quiet "s3 upload " + getBucket()
-        logger.quiet "using aws profile " + getAwsProfile()
+        String bucketName = getBucket()
+        String regionName = getRegion()
+        String profileName = getAwsProfile()
+
+        logger.quiet "s3 upload " + bucketName
+        logger.quiet "using region " + regionName
+        logger.quiet "using aws profile " + profileName
         String fileName = getFile()
         if (fileName == null || fileName == '') {
             return;
         }
         String keyValue = getKey()
-        S3Client client = new S3Client(getAwsProfile());
-        String presigned = client.uploadFile(getBucket(), keyValue, fileName, getLink())
+        S3Client client = new S3Client(profileName, regionName)
+        String presigned = client.uploadFile(bucketName, keyValue, fileName, getLink())
         logger.quiet "Uploaded \"" + fileName + "\" to \"" + keyValue + "\""
         logger.quiet "Downloadable from " + presigned + " within next 30 days"
     }

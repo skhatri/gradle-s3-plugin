@@ -37,8 +37,16 @@ s3 {
     bucket = 'skhatri-bucket'
     awsProfile = 'default'
     upload {
+        //"key" is the name of the target file in S3 (in this example we create a versioned file)
         key =  new org.joda.time.LocalDate().toString('yyyy/MM/dd')+'/gradle-s3-plugin-1.0.2-SNAPSHOT.jar'
+        
+        // "file" is the name of the local source file
         file = '../build/libs/gradle-s3-plugin-1.0.2-SNAPSHOT.jar'
+        
+        //"link" will create http redirect to the latest uploaded version of the file
+        // This will redirect is only available via the "s3 static webpage" option. 
+        // walkthorugh link from AWS on how to set it up
+        // https://docs.aws.amazon.com/AmazonS3/latest/dev/website-hosting-custom-domain-walkthrough.html
         link = 'latest/gradle-plugin.jar'
     }
     download {
@@ -89,4 +97,5 @@ task awsDownload(type: com.github.skhatri.s3aws.plugin.S3DownloadTask) {
     saveTo = 'gradle-plugin.txt'
 }
 ```
+
 

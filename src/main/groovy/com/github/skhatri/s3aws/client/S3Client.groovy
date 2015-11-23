@@ -1,6 +1,8 @@
 package com.github.skhatri.s3aws.client
 
 import com.amazonaws.auth.profile.ProfileCredentialsProvider
+import com.amazonaws.regions.Region
+import com.amazonaws.regions.Regions
 import com.amazonaws.services.s3.AmazonS3Client
 import com.amazonaws.services.s3.model.CannedAccessControlList
 import com.amazonaws.services.s3.model.ObjectMetadata
@@ -17,8 +19,11 @@ public class S3Client {
         s3Client = new AmazonS3Client(new ProfileCredentialsProvider(awsProfile));
     }
 
-    public String uploadFile(String bucketName, String key, String fileName, String link) {
+    public String uploadFile(String bucketName, String key, String fileName, String link, String region) {
         try {
+            if (region != null && !region.equals('')) {
+                s3Client.setRegion(Region.getRegion(Regions.fromName(region)))
+            }
             PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, key, new File(fileName))
             s3Client.putObject(putObjectRequest)
             String linkName = createLinkObject(link, key, bucketName)
@@ -48,8 +53,11 @@ public class S3Client {
         key.startsWith("/") || key.startsWith("http") ? key : "/" + key
     }
 
-    public void downloadFile(String bucketName, String key, String saveTo) {
+    public void downloadFile(String bucketName, String key, String saveTo, String region) {
         try {
+            if (region != null && !region.equals('')) {
+                s3Client.setRegion(Region.getRegion(Regions.fromName(region)))
+            }
             S3Object object = s3Client.getObject(bucketName, key);
             String redirect = object.getObjectMetadata().getRawMetadataValue(AMZ_REDIRECT_LINK)
             if (redirect != null && !redirect.isEmpty()) {

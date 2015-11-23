@@ -6,4 +6,5 @@ class S3UploadExtension {
     String key = ''
     String file = ''
     String link = ''
+    String region = null
 }

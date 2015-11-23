@@ -25,6 +25,7 @@ public class S3Plugin implements Plugin<Project> {
             conventionMapping.key = { s3UploadExt.key }
             conventionMapping.link = { s3UploadExt.link }
             conventionMapping.file = { s3UploadExt.file }
+            conventionMapping.region = { s3UploadExt.region }
         }
     }
 
@@ -39,6 +40,7 @@ public class S3Plugin implements Plugin<Project> {
             conventionMapping.awsProfile = { s3Ext.awsProfile }
             conventionMapping.key = { s3DownloadExt.key }
             conventionMapping.saveTo = { s3DownloadExt.saveTo }
+            conventionMapping.region = { s3DownloadExt.region }
         }
     }
 

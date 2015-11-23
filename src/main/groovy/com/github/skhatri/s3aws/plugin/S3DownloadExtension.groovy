@@ -5,5 +5,6 @@ public class S3DownloadExtension {
     String awsProfile
     String key = "";
     String saveTo = "";
+    String region = null
 }
 

@@ -10,6 +10,8 @@ class S3UploadTask extends DefaultTask {
     @Input
     String bucket
     @Input
+    String region
+    @Input
     String awsProfile
     @Input
     String key
@@ -21,6 +23,7 @@ class S3UploadTask extends DefaultTask {
     public S3UploadTask() {
         bucket = ''
         awsProfile = ''
+        region = null
     }
 
     @TaskAction
@@ -33,7 +36,7 @@ class S3UploadTask extends DefaultTask {
         }
         String keyValue = getKey()
         S3Client client = new S3Client(getAwsProfile());
-        String presigned = client.uploadFile(getBucket(), keyValue, fileName, getLink())
+        String presigned = client.uploadFile(getBucket(), keyValue, fileName, getLink(), getRegion())
         logger.quiet "Uploaded \"" + fileName + "\" to \"" + keyValue + "\""
         logger.quiet "Downloadable from " + presigned + " within next 30 days"
     }

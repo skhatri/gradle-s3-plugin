@@ -22,9 +22,7 @@ public class S3Plugin implements Plugin<Project> {
 
             conventionMapping.bucket = { s3Ext.bucket }
             conventionMapping.awsProfile = { s3Ext.awsProfile }
-            conventionMapping.key = { s3UploadExt.key }
-            conventionMapping.link = { s3UploadExt.link }
-            conventionMapping.file = { s3UploadExt.file }
+            conventionMapping.filesToUpload = { s3UploadExt.filesToUpload }
             conventionMapping.region = { s3UploadExt.region }
         }
     }
@@ -38,8 +36,7 @@ public class S3Plugin implements Plugin<Project> {
             def s3DownloadExt = s3Ext.extensions.getByName('download')
             conventionMapping.bucket = { s3Ext.bucket }
             conventionMapping.awsProfile = { s3Ext.awsProfile }
-            conventionMapping.key = { s3DownloadExt.key }
-            conventionMapping.saveTo = { s3DownloadExt.saveTo }
+            conventionMapping.filesToDownload = { s3DownloadExt.filesToDownload }
             conventionMapping.region = { s3DownloadExt.region }
         }
     }

@@ -14,26 +14,48 @@ class S3DownloadTask extends DefaultTask {
     @Input
     String awsProfile
     @Input
-    String key
-    @Input
-    String saveTo
+    def filesToDownload
 
     public S3DownloadTask() {
         bucket = ''
         awsProfile = ''
         region = null
+        filesToDownload = []
     }
 
     @TaskAction
     public void perform() {
         logger.quiet "s3 download " + getBucket()
+
         logger.quiet "using aws profile " + getAwsProfile()
-        String keyValue = getKey()
-        if (keyValue == null || keyValue == '') {
+
+        def files = getFilesToDownload()
+
+        if (files == null || files.size() == 0) {
             return;
         }
+
         S3Client client = new S3Client(getAwsProfile());
-        client.downloadFile(getBucket(), keyValue, getSaveTo(), getRegion())
-        logger.quiet "Downloaded \"" + keyValue + "\" to \"" + getSaveTo() + "\""
+
+        Closure downloadFile = { String keyValue, String localFile ->
+
+            client.downloadFile(getBucket(), keyValue, localFile, getRegion())
+
+            logger.quiet "Downloaded \"" + keyValue + "\" to \"" + getSaveTo() + "\""
+
+        }
+
+        if (files instanceof Map) {
+
+            downloadFile(files.awsKey, files.localFile)
+
+        }
+        else {
+            files.each {
+                downloadFile(it.awsKey, it.localFile)
+            }
+        }
+
+
     }
 }

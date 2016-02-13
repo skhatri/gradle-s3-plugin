@@ -1,6 +1,8 @@
 package com.github.skhatri.s3aws.client
 
 import com.amazonaws.auth.profile.ProfileCredentialsProvider
+import com.amazonaws.regions.Region
+import com.amazonaws.regions.Regions
 import com.amazonaws.services.s3.AmazonS3Client
 import com.amazonaws.services.s3.model.CannedAccessControlList
 import com.amazonaws.services.s3.model.ObjectMetadata
@@ -13,8 +15,11 @@ public class S3Client {
 
     private static final String AMZ_REDIRECT_LINK = "x-amz-website-redirect-location";
 
-    public S3Client(String awsProfile) {
+    public S3Client(String awsProfile, String region) {
         s3Client = new AmazonS3Client(new ProfileCredentialsProvider(awsProfile));
+        if (region != null && !"".equals(region)) {
+            s3Client.setRegion(Region.getRegion(Regions.fromName(region)))
+        }
     }
 
     public String uploadFile(String bucketName, String key, String fileName, String link) {

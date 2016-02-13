@@ -10,6 +10,8 @@ class S3DownloadTask extends DefaultTask {
     @Input
     String bucket
     @Input
+    String region
+    @Input
     String awsProfile
     @Input
     String key
@@ -18,19 +20,27 @@ class S3DownloadTask extends DefaultTask {
 
     public S3DownloadTask() {
         bucket = ''
+        region = ''
         awsProfile = ''
     }
 
     @TaskAction
     public void perform() {
-        logger.quiet "s3 download " + getBucket()
-        logger.quiet "using aws profile " + getAwsProfile()
+        String bucketName = getBucket()
+        String regionName = getRegion()
+        String profileName = getAwsProfile()
+
+        logger.quiet "s3 download " + bucketName
+        logger.quiet "using region " + regionName
+        logger.quiet "using aws profile " + profileName
         String keyValue = getKey()
         if (keyValue == null || keyValue == '') {
             return;
         }
-        S3Client client = new S3Client(getAwsProfile());
-        client.downloadFile(getBucket(), keyValue, getSaveTo())
-        logger.quiet "Downloaded \"" + keyValue + "\" to \"" + getSaveTo() + "\""
+        S3Client client = new S3Client(profileName, regionName)
+
+        String saveTo = getSaveTo()
+        client.downloadFile(bucketName, keyValue, saveTo)
+        logger.quiet "Downloaded \"" + keyValue + "\" to \"" + saveTo + "\""
     }
 }

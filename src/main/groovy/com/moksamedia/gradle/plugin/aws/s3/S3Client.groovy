@@ -1,4 +1,4 @@
-package com.github.skhatri.s3aws.client
+package com.moksamedia.gradle.plugin.aws
 
 import com.amazonaws.auth.profile.ProfileCredentialsProvider
 import com.amazonaws.regions.Region

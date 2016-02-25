@@ -1,5 +1,3 @@
-import org.gradle.api.artifacts.maven.MavenDeployment
-
 buildscript {
     repositories { jcenter() }
     dependencies {
@@ -7,20 +5,28 @@ buildscript {
     }
 }
 
+plugins {
+    id "com.jfrog.bintray" version "1.4"
+}
+
 apply plugin: 'groovy'
-apply plugin: 'idea'
 apply plugin: 'com.github.johnrengelman.shadow'
 
 dependencies {
     compile localGroovy()
     compile gradleApi()
-    compile 'com.amazonaws:aws-java-sdk-s3:1.9.33'
+    compile 'com.amazonaws:aws-java-sdk-s3:1.9.19'
+    compile 'com.amazonaws:aws-java-sdk-ec2:1.9.19'
     compile 'joda-time:joda-time:2.4'
 }
 
 repositories {
     mavenCentral()
 }
+
+jar.baseName = "s3transfer"
+shadowJar.baseName = "s3transfer"
+shadowJar.classifier = ''
 
 task javadocJar(type: Jar, dependsOn: javadoc) {
     classifier = 'javadoc'
@@ -31,3 +37,29 @@ task sourcesJar(type: Jar) {
     from sourceSets.main.allSource
     classifier = 'sources'
 }
+
+/*
+project.configurations.compile.each {
+    println it.toString()
+}
+*/
+
+bintray {
+    user = 'cantgetnosleep'
+    key = 'b7470f2921f986b276a8b7eca87e5f33008a6325'
+    configurations = ['shadow']
+    pkg {
+        name = 's3transfer'
+        repo = 'moksamedia'
+        licenses = ['Apache-2.0']
+        vcsUrl = "https://github.com/moksamedia/gradle-s3-plugin"
+        version {
+            name = "${project.version}"
+            desc = 'AWS S3 transfer utility'
+            released  = new Date()
+            attributes = ['gradle-plugin': 'com.moksamedia:com.moksamedia:com.moksamedia.s3transfer']
+        }
+    }
+
+}
+

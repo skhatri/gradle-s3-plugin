@@ -1,6 +1,6 @@
-package com.github.skhatri.s3aws.plugin
+package com.moksamedia.gradle.plugin.aws.s3
 
-import com.github.skhatri.s3aws.client.S3Client
+import com.moksamedia.gradle.plugin.aws.S3Client
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.TaskAction

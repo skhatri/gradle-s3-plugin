@@ -1,6 +1,6 @@
-package com.github.skhatri.s3aws.plugin
+package com.moksamedia.gradle.plugin.aws.s3
 
-import com.github.skhatri.s3aws.client.S3Client
+import com.moksamedia.gradle.plugin.aws.S3Client
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.TaskAction
@@ -40,11 +40,15 @@ class S3UploadTask extends DefaultTask {
 
         Closure uploadFile = { String keyValue, String fileName, String link ->
 
+            String bucket = getBucket()
+
+            logger.quiet "Uploading \"${fileName}\" to \"${bucket}/${keyValue}\""
+
             String presigned = client.uploadFile(getBucket(), keyValue, fileName, link, getRegion())
 
-            logger.quiet "Uploaded \"" + fileName + "\" to \"" + keyValue + "\""
+            logger.quiet "Finished uploading \"${keyValue}\""
 
-            logger.quiet "Downloadable from " + presigned + " within next 30 days"
+            //logger.quiet "Downloadable from " + presigned + " within next 30 days"
 
         }
 

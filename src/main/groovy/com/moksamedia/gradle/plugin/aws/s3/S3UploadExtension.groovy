@@ -1,4 +1,4 @@
-package com.github.skhatri.s3aws.plugin
+package com.moksamedia.gradle.plugin.aws.s3
 
 class S3UploadExtension {
     String bucket

@@ -24,7 +24,7 @@ Plugin Configuration in your build.gradle
 ```
 buildscript {
     dependencies {
-        classpath 'com.github.skhatri:gradle-s3-plugin:1.0.2'
+        classpath 'com.github.skhatri:gradle-s3-plugin:1.0.4'
         classpath 'joda-time:joda-time:2.4'
     }
     repositories {

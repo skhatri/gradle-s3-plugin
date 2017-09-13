@@ -1,5 +1,6 @@
 package com.github.skhatri.s3aws.plugin
 
+import com.amazonaws.services.s3.model.ObjectMetadata
 import com.github.skhatri.s3aws.client.S3Client
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.Input
@@ -19,11 +20,14 @@ class S3UploadTask extends DefaultTask {
     String file
     @Input
     String link
+    @Input
+    ObjectMetadata metadata
 
     public S3UploadTask() {
         bucket = ''
         region = ''
         awsProfile = ''
+        metadata = null;
     }
 
     @TaskAction
@@ -41,8 +45,8 @@ class S3UploadTask extends DefaultTask {
         }
         String keyValue = getKey()
         S3Client client = new S3Client(profileName, regionName)
-        String presigned = client.uploadFile(bucketName, keyValue, fileName, getLink())
+        String presigned = client.uploadFile(bucketName, keyValue, fileName, getLink(), metadata)
         logger.quiet "Uploaded \"" + fileName + "\" to \"" + keyValue + "\""
-        logger.quiet "Downloadable from " + presigned + " within next 30 days"
+        logger.quiet "Downloadable from " + presigned + " within next 7 days"
     }
 }

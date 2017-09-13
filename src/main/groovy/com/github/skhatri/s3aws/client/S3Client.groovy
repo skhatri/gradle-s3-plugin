@@ -25,13 +25,18 @@ public class S3Client {
         }
     }
 
-    public String uploadFile(String bucketName, String key, String fileName, String link) {
+    public String uploadFile(String bucketName, String key, String fileName, String link, ObjectMetadata metadata) {
         try {
             PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, key, new File(fileName))
+
+            if (metadata != null) {
+                putObjectRequest.withMetadata(metadata)
+            }
+
             s3Client.putObject(putObjectRequest)
             String linkName = createLinkObject(link, key, bucketName)
             if (linkName == null) {
-                linkName = s3Client.generatePresignedUrl(bucketName, key, new LocalDateTime().plusDays(30).toDate())
+                linkName = s3Client.generatePresignedUrl(bucketName, key, new LocalDateTime().plusDays(7).toDate())
             }
             return linkName
         } catch (Exception e) {
@@ -48,7 +53,7 @@ public class S3Client {
             PutObjectRequest linkPutRequest = new PutObjectRequest(bucketName, link, inputStream, metadata)
             linkPutRequest.setCannedAcl(CannedAccessControlList.Private)
             s3Client.putObject(linkPutRequest);
-            return s3Client.generatePresignedUrl(bucketName, link, new LocalDateTime().plusDays(30).toDate());
+            return s3Client.generatePresignedUrl(bucketName, link, new LocalDateTime().plusDays(7).toDate());
         }
     }
 

@@ -25,6 +25,7 @@ public class S3Plugin implements Plugin<Project> {
             conventionMapping.key = { s3UploadExt.key }
             conventionMapping.link = { s3UploadExt.link }
             conventionMapping.file = { s3UploadExt.file }
+            conventionMapping.metadata = { s3UploadExt.metadata }
         }
     }
 

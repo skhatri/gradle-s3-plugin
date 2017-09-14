@@ -25,12 +25,16 @@ public class S3Client {
         }
     }
 
-    public String uploadFile(String bucketName, String key, String fileName, String link, ObjectMetadata metadata) {
+    public String uploadFile(String bucketName, String key, String fileName, String link, ObjectMetadata metadata, CannedAccessControlList acl) {
         try {
             PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, key, new File(fileName))
 
             if (metadata != null) {
                 putObjectRequest.withMetadata(metadata)
+            }
+
+            if (acl != null) {
+                putObjectRequest.withCannedAcl(acl)
             }
 
             s3Client.putObject(putObjectRequest)

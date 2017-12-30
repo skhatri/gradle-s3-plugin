@@ -23,8 +23,16 @@ public class S3Plugin implements Plugin<Project> {
             conventionMapping.bucket = { s3Ext.bucket }
             conventionMapping.awsProfile = { s3Ext.awsProfile }
             conventionMapping.key = { s3UploadExt.key }
-            conventionMapping.link = { s3UploadExt.link }
+            if (s3UploadExt.link) {
+                conventionMapping.link = { s3UploadExt.link }
+            }
             conventionMapping.file = { s3UploadExt.file }
+            if (s3UploadExt.metadata) {
+                conventionMapping.metadata = { s3UploadExt.metadata }
+            }
+            if (s3UploadExt.acl) {
+                conventionMapping.acl = { s3UploadExt.acl }
+            }
         }
     }
 

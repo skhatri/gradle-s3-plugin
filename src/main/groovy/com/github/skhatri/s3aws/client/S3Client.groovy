@@ -17,7 +17,7 @@ public class S3Client {
     private static final String AMZ_REDIRECT_LINK = "x-amz-website-redirect-location";
 
     public S3Client(String awsProfile, String region) {
-        s3Client = "none".equals(awsProfile) ?
+        s3Client = "".equals(awsProfile) ?
             new AmazonS3Client(new DefaultAWSCredentialsProviderChain()) :
             new AmazonS3Client(new ProfileCredentialsProvider(awsProfile));
         if (region != null && !"".equals(region)) {

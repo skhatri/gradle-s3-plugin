@@ -10,11 +10,11 @@ import org.gradle.api.tasks.TaskAction
 
 class S3UploadTask extends DefaultTask {
 
-    @Input
+    @Input @Optional
     String bucket
-    @Input
+    @Input @Optional
     String region
-    @Input
+    @Input @Optional
     String awsProfile
     @Input
     String key

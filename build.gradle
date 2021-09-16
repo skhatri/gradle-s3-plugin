@@ -1,8 +1,21 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath("com.gradle.publish:plugin-publish-plugin:0.16.0")
+    }
+}
 
 apply plugin: 'groovy'
 apply plugin: 'idea'
 apply plugin: "maven-publish"
 apply plugin: 'signing'
+apply plugin: "java-gradle-plugin"
+apply plugin: "com.gradle.plugin-publish"
 
 dependencies {
     implementation localGroovy()
@@ -36,6 +49,10 @@ artifacts {
 
 publishing {
     repositories {
+        maven {
+            name = "localPluginRepository"
+            url = uri("../local-plugin-repository")
+        }
         maven {
             url = version.endsWith('SNAPSHOT') ? project.ext['upload.snapshot.url'] : project.ext['upload.release.url']
             credentials {
@@ -109,3 +126,19 @@ gradle.taskGraph.whenReady {
 
 }
 
+gradlePlugin {
+    plugins {
+        create("com.github.skhatri.s3") {
+            id = "s3"
+            displayName = "Plugin upload and download files from AWS S3 buckets"
+            description = "Plugin upload and download files from AWS S3 buckets"
+            implementationClass = "com.github.skhatri.s3aws.plugin.S3Plugin"
+        }
+    }
+}
+
+pluginBundle {
+    website = "https://github.com/skhatri/gradle-s3-plugin"
+    vcsUrl = "https://github.com/skhatri/gradle-s3-plugin.git"
+    tags = ["s3", "bucket", "upload", "download"]
+}

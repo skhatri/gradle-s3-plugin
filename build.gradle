@@ -129,7 +129,7 @@ gradle.taskGraph.whenReady {
 gradlePlugin {
     plugins {
         create("com.github.skhatri.s3") {
-            id = "s3"
+            id = "com.github.skhatri.s3"
             displayName = "Plugin upload and download files from AWS S3 buckets"
             description = "Plugin upload and download files from AWS S3 buckets"
             implementationClass = "com.github.skhatri.s3aws.plugin.S3Plugin"

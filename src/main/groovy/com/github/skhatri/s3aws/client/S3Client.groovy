@@ -41,7 +41,7 @@ public class S3Client {
             s3Client.putObject(putObjectRequest)
             String linkName = createLinkObject(link, key, bucketName)
             if (linkName == null) {
-                linkName = s3Client.generatePresignedUrl(bucketName, key, ZonedDateTime.now().plusDays(7).toInstant())
+                linkName = s3Client.generatePresignedUrl(bucketName, key, Date.from(ZonedDateTime.now().plusDays(7).toInstant()))
             }
             return linkName
         } catch (Exception e) {
@@ -58,7 +58,7 @@ public class S3Client {
             PutObjectRequest linkPutRequest = new PutObjectRequest(bucketName, link, inputStream, metadata)
             linkPutRequest.setCannedAcl(CannedAccessControlList.Private)
             s3Client.putObject(linkPutRequest);
-            return s3Client.generatePresignedUrl(bucketName, link, ZonedDateTime.now().plusDays(7).toInstant());
+            return s3Client.generatePresignedUrl(bucketName, link, Date.from(ZonedDateTime.now().plusDays(7).toInstant()));
         }
     }
 

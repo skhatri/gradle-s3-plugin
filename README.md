@@ -25,7 +25,6 @@ Plugin Configuration in your build.gradle
 buildscript {
     dependencies {
         classpath 'com.github.skhatri:gradle-s3-plugin:1.0.5'
-        classpath 'joda-time:joda-time:2.4'
     }
     repositories {
         mavenCentral()
@@ -38,10 +37,10 @@ s3 {
     awsProfile = 'default'
     upload {
         //"key" is the name of the target file in S3 (in this example we create a versioned file)
-        key =  new org.joda.time.LocalDate().toString('yyyy/MM/dd')+'/gradle-s3-plugin-1.0.2-SNAPSHOT.jar'
+        key =  java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyy/MM/dd")) +'/gradle-s3-plugin-1.0.5-SNAPSHOT.jar'
         
         // "file" is the name of the local source file
-        file = '../build/libs/gradle-s3-plugin-1.0.2-SNAPSHOT.jar'
+        file = '../build/libs/gradle-s3-plugin-1.0.5-SNAPSHOT.jar'
         
         //"link" will create http redirect to the latest uploaded version of the file
         // This will redirect is only available via the "s3 static webpage" option. 

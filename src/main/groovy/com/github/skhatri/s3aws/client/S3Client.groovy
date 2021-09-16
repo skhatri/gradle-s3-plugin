@@ -9,7 +9,8 @@ import com.amazonaws.services.s3.model.CannedAccessControlList
 import com.amazonaws.services.s3.model.ObjectMetadata
 import com.amazonaws.services.s3.model.PutObjectRequest
 import com.amazonaws.services.s3.model.S3Object
-import org.joda.time.LocalDateTime
+
+import java.time.ZonedDateTime
 
 public class S3Client {
     private final AmazonS3Client s3Client;
@@ -40,7 +41,7 @@ public class S3Client {
             s3Client.putObject(putObjectRequest)
             String linkName = createLinkObject(link, key, bucketName)
             if (linkName == null) {
-                linkName = s3Client.generatePresignedUrl(bucketName, key, new LocalDateTime().plusDays(7).toDate())
+                linkName = s3Client.generatePresignedUrl(bucketName, key, ZonedDateTime.now().plusDays(7).toInstant())
             }
             return linkName
         } catch (Exception e) {
@@ -57,7 +58,7 @@ public class S3Client {
             PutObjectRequest linkPutRequest = new PutObjectRequest(bucketName, link, inputStream, metadata)
             linkPutRequest.setCannedAcl(CannedAccessControlList.Private)
             s3Client.putObject(linkPutRequest);
-            return s3Client.generatePresignedUrl(bucketName, link, new LocalDateTime().plusDays(7).toDate());
+            return s3Client.generatePresignedUrl(bucketName, link, ZonedDateTime.now().plusDays(7).toInstant());
         }
     }
 

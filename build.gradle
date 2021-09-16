@@ -1,15 +1,18 @@
-import org.gradle.api.artifacts.maven.MavenDeployment
 
 apply plugin: 'groovy'
 apply plugin: 'idea'
-apply plugin: 'maven'
+apply plugin: "maven-publish"
 apply plugin: 'signing'
 
 dependencies {
-    compile localGroovy()
-    compile gradleApi()
-    compile 'com.amazonaws:aws-java-sdk-s3:1.11.82'
-    compile 'joda-time:joda-time:2.4'
+    implementation localGroovy()
+    implementation gradleApi()
+    implementation 'com.amazonaws:aws-java-sdk-s3:1.12.68'
+}
+
+java {
+    withJavadocJar()
+    withSourcesJar()
 }
 
 repositories {
@@ -24,65 +27,85 @@ if (isReleaseVersion) {
 }
 
 
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    classifier = 'javadoc'
-    from "$buildDir/docs/javadoc"
-}
-
-task sourcesJar(type: Jar) {
-    from sourceSets.main.allSource
-    classifier = 'sources'
-}
-
 artifacts {
     archives jar
     archives javadocJar
     archives sourcesJar
 }
 
-signing {
-    required { isReleaseVersion && gradle.taskGraph.hasTask("uploadArchives") }
-    sign configurations.archives
-}
 
-uploadArchives {
+publishing {
     repositories {
-        mavenDeployer {
-            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-            repository(url: project.ext['upload.url']) {
-                authentication(userName: project.ext['upload.user'], password: project.ext['upload.password'])
+        maven {
+            url = version.endsWith('SNAPSHOT') ? project.ext['upload.snapshot.url'] : project.ext['upload.release.url']
+            credentials {
+                username = project.ext['upload.user']
+                password = project.ext['upload.password']
             }
-            pom.version = project.version
-            pom.artifactId = "${project.artifact}"
-            pom.project {
-                name 'Gradle S3 Plugin'
-                description 'Plugin upload and download files from AWS S3 buckets'
-                url 'https://github.com/skhatri/gradle-s3-plugin'
+        }
+    }
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId = 'gradle-s3-plugin'
+            from components.java
+            versionMapping {
+                usage('java-api') {
+                    fromResolutionOf('runtimeClasspath')
+                }
+                usage('java-runtime') {
+                    fromResolutionResult()
+                }
+            }
+            pom {
+                name = 'Gradle S3 Plugin'
+                description = 'Plugin upload and download files from AWS S3 buckets'
+                url = 'https://github.com/skhatri/gradle-s3-plugin'
+                properties = [
+                        "intent": "plugin",
+                        "domain": "cloud"
+                ]
                 licenses {
                     license {
-                        name 'The Apache Software License, Version 2.0'
-                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                        distribution 'repo'
+                        name='The Apache Software License, Version 2.0'
+                        url='http://www.apache.org/licenses/LICENSE-2.0.txt'
+                        distribution='repo'
                     }
                 }
                 developers {
                     developer {
-                        id 'skhatri'
-                        name 'Suresh Khatri'
-                        email 'kc2005au@gmail.com'
-                        url 'https://github.com/skhatri'
-                        roles {
-                            role 'Developer'
-                        }
+                        id='skhatri'
+                        name='Suresh Khatri'
+                        email='kc2005au@gmail.com'
+                        url='https://github.com/skhatri'
                     }
                 }
                 scm {
-                    connection 'scm:git:https://github.com/skhatri/gradle-s3-plugin.git'
-                    developerConnection 'scm:git:https://github.com/skhatri/gradle-s3-plugin.git'
-                    tag 'HEAD'
-                    url 'https://github.com/skhatri/gradle-s3-plugin'
+                    connection='scm:git:https://github.com/skhatri/gradle-s3-plugin.git'
+                    developerConnection='scm:git:https://github.com/skhatri/gradle-s3-plugin.git'
+                    url='https://github.com/skhatri/gradle-s3-plugin'
                 }
             }
         }
     }
+
 }
+
+signing {
+    required { isReleaseVersion }
+    sign configurations.archives
+    sign publishing.publications.mavenJava
+}
+
+gradle.taskGraph.whenReady {
+    project.gradle.taskGraph.getAllTasks().each { tsk ->
+        if (tsk.name == "signArchives") {
+            allprojects {
+                ext["signing.keyId"] = "${project.ext["signing.keyId"]}"
+                ext["signing.secretKeyRingFile"] = "${project.ext["signing.secretKeyRingFile"]}"
+                ext["signing.password"] = "${project.ext["signing.password"]}"
+            }
+        }
+    }
+
+}
+

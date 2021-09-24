@@ -1,0 +1,18 @@
+plugins {
+  id "com.github.skhatri.s3" version "1.0.7"
+}
+
+s3 {
+    bucket = 'skhatri-bucket'
+    //awsProfile = 'default'
+    upload {
+        key = 'gradle-plugins/gradle-plugins.gradle'
+        file = 'gradle-plugins.gradle'
+        link = 'latest/gradle-plugins.example.gradle'
+    }
+    download {
+        key = 'gradle-plugins/gradle-plugins.gradle'
+        saveTo = 'gradle-pugin.tmp.gradle'
+    }
+}
+
